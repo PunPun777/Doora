@@ -1,4 +1,4 @@
-# 🚪 Doora Platfor
+# 🚪 Doora Platform
 
 ## 1. 🌍 Project Overview
 Doora is a community-driven service exchange platform that connects service providers and service seekers within local communities. The platform enables secure communication, real-time service matching, and trust-based reputation building. Users can switch roles flexibly based on their needs.
