@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const JWT_SECRET: Secret = process.env.JWT_SECRET || "default_secret";
+const JWT_SECRET: Secret = process.env.JWT_SECRET || "supersecretkey";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 // 🩵 Local StringValue type since @types/jsonwebtoken lacks it

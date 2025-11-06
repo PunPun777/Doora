@@ -1,48 +1,34 @@
-import express, { Application, Request, Response } from "express";
+// src/server.ts
+import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import authRoutes from "./routes/auth"; // ✅ correct import path
+import userRoutes from "./routes/users";
 
-// Load environment variables
+
 dotenv.config();
 
-const app: Application = express();
+const app = express();
 
-// Middleware
+
+// ✅ Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Simple health check route
-app.get("/", (req: Request, res: Response) => {
-  res.send("🚀 Doora backend is running!");
-});
+// ✅ Routes
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 
-// Environment variables
+
 const PORT = process.env.PORT || 4000;
-const MONGO_URI = process.env.MONGODB_URI;
-const JWT_SECRET = process.env.JWT_SECRET;
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/doora";
 
-// Check required env vars
-if (!MONGO_URI) {
-  console.error("❌ MONGODB_URI not set in environment");
-  process.exit(1);
-}
-if (!JWT_SECRET) {
-  console.error("❌ JWT_SECRET not set in environment");
-  process.exit(1);
-}
-
-// Connect to MongoDB
+// ✅ Database connection
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGODB_URI)
   .then(() => {
-    console.log("✅ MongoDB connected successfully");
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-    });
+    console.log("✅ MongoDB connected");
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-  });
-
-export default app;
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
