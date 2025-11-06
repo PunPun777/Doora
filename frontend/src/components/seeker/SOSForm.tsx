@@ -48,7 +48,7 @@ export const SOSForm: React.FC<SOSFormProps> = ({ onSubmit, onCancel }) => {
       low: 24 * 60 * 60 * 1000, // 24 hours
       medium: 12 * 60 * 60 * 1000, // 12 hours
       high: 6 * 60 * 60 * 1000, // 6 hours
-      critical: 2 * 60 * 60 * 1000, // 2 hours
+      critical: 1 * 60 * 60 * 1000, // 1 hours
     };
     return new Date(now.getTime() + expiryTimes[urgency]);
   };
@@ -283,7 +283,7 @@ export const SOSForm: React.FC<SOSFormProps> = ({ onSubmit, onCancel }) => {
             <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
               <p className="text-sm text-yellow-800">
                 ⏰ This SOS will expire in {' '}
-                {formData.urgency === 'critical' ? '2 hours' :
+                {formData.urgency === 'critical' ? '1 hours' :
                  formData.urgency === 'high' ? '6 hours' :
                  formData.urgency === 'medium' ? '12 hours' : '24 hours'}
               </p>

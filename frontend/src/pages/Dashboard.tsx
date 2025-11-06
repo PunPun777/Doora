@@ -8,6 +8,7 @@ export const Dashboard: React.FC = () => {
   const { currentRole, setCurrentRole } = useRole();
   const { user } = useAuth();
 
+  // Always show role selector if no role is selected
   if (!currentRole) {
     return <RoleSelector />;
   }
@@ -20,35 +21,45 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between py-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Welcome, {user?.name}!
-                <span className="text-lg">👋</span>
+                Welcome, {user?.name}! 👋
               </h1>
               <p className="text-gray-600 mt-1">
                 Manage your Doora experience
               </p>
             </div>
             
-            {/* Current Role Display and Dashboard Button */}
-            <div className="flex flex-col items-end space-y-2">
-              <div className="flex items-center space-x-2">
-                {/* <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  currentRole === 'provider' 
-                    ? 'bg-green-100 text-green-800 border border-green-200' 
-                    : 'bg-orange-100 text-orange-800 border border-orange-200'
-                }`}>
-                  {currentRole === 'provider' ? 'Provider' : 'Seeker'}
-                </span> */}
-              </div>
-              <button
-                onClick={() => setCurrentRole(null)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
-              >
-                Dashboard
-              </button>
-            </div>
+            {/* Dashboard Switcher */}
+            <button
+              onClick={() => setCurrentRole(null)}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Switch
+            </button>
           </div>
 
-          {/* REMOVED: Role Navigation Buttons section - completely deleted */}
+          {/* Role Navigation Buttons */}
+          {/* <div className="flex space-x-4 pb-6">
+            <button
+              onClick={() => setCurrentRole('provider')}
+              className={`px-6 py-3 rounded-lg transition-all duration-200 font-medium ${
+                currentRole === 'provider'
+                  ? 'bg-blue-600 text-white shadow-md border-2 border-blue-600'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-300 hover:border-blue-400'
+              }`}
+            >
+              🚀 Provider 
+            </button>
+            <button
+              onClick={() => setCurrentRole('seeker')}
+              className={`px-6 py-3 rounded-lg transition-all duration-200 font-medium ${
+                currentRole === 'seeker'
+                  ? 'bg-blue-600 text-white shadow-md border-2 border-blue-600'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-300 hover:border-blue-400'
+              }`}
+            >
+              🔍 Seeker 
+            </button>
+          </div> */}
         </div>
       </div>
 

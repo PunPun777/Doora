@@ -5,15 +5,13 @@ interface ServiceGridProps {
   services: Service[];
   filters: SearchFiltersType;
   onFiltersChange: (filters: SearchFiltersType) => void;
+  onStartChat: (service: Service) => void; // Add this line
 }
 
 export const ServiceGrid: React.FC<ServiceGridProps> = ({ 
-  services 
-  // Remove unused filters and onFiltersChange
+  services,
+  onStartChat
 }) => {
-  // Since we're not using filters for now, just display all services
-  // You can add filtering logic back when needed
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {services.map(service => (
@@ -30,9 +28,12 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({
           </div>
           <div className="flex items-center justify-between">
             <span className="text-xs text-gray-400">By {service.provider.name}</span>
-            <span className="text-xs text-gray-400">
-              {service.createdAt.toLocaleDateString()}
-            </span>
+            <button
+              onClick={() => onStartChat(service)}
+              className="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 transition-colors"
+            >
+              💬 Contact
+            </button>
           </div>
         </div>
       ))}
