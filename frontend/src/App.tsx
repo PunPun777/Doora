@@ -7,7 +7,10 @@ import { Footer } from './components/ui/Footer';
 import { LoginPage } from './pages/LoginPage';
 import { Dashboard } from './pages/Dashboard';
 import { ChatPage } from './pages/ChatPage';
+import { MessagesPage } from './pages/MessagePage';
 
+// In your routes:
+<Route path="/messages" element={<MessagesPage />} />
 const queryClient = new QueryClient();
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {

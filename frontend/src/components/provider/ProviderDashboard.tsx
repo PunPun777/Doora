@@ -3,9 +3,16 @@ import { Plus, AlertTriangle } from 'lucide-react';
 import { PostServiceForm } from './PostServiceForm';
 import { ProviderMetrics } from './ProviderMetrics';
 import { SOSList } from '../shared/SOSList';
+import { ChatInterface } from '../shared/ChatInterface';
+import { SOSPost, Conversation, ChatMessage } from '../../types';
 
 export const ProviderDashboard: React.FC = () => {
   const [showServiceForm, setShowServiceForm] = useState(false);
+  const [activeChat, setActiveChat] = useState<{
+    conversation: Conversation;
+    messages: ChatMessage[];
+    sos: SOSPost;
+  } | null>(null);
 
   // Mock metrics data
   const mockMetrics = {
@@ -62,13 +69,96 @@ export const ProviderDashboard: React.FC = () => {
     }
   ];
 
-  const handleClaimSOS = (sosId: string) => {
-    alert(`You have claimed SOS post: ${sosId}\nThe seeker will be notified immediately!`);
-    // In real app, this would call an API
+  const handleRespondToSOS = (sos: SOSPost) => {
+    const conversation: Conversation = {
+      id: `sos-conv-${sos.id}`,
+      participantIds: [sos.userId, 'provider1'],
+      participants: [
+        {
+          id: sos.userId,
+          name: sos.userName,
+          role: 'seeker'
+        },
+        {
+          id: 'provider1',
+          name: 'You',
+          role: 'provider'
+        }
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
+      anonymousCallEnabled: true,
+      context: {
+        sosRequestId: sos.id,
+        serviceType: sos.category
+      }
+    };
+
+    const initialMessages: ChatMessage[] = [
+      {
+        id: '1',
+        conversationId: conversation.id,
+        senderId: 'provider1',
+        senderName: 'You',
+        senderRole: 'provider',
+        content: `Hello ${sos.userName}! I saw your SOS request for "${sos.title}". I'm available to help you. What's the current situation?`,
+        timestamp: new Date(),
+        messageType: 'text',
+        read: false
+      }
+    ];
+
+    setActiveChat({
+      conversation,
+      messages: initialMessages,
+      sos
+    });
+  };
+
+  const handleSendMessage = (content: string, messageType?: ChatMessage['messageType']) => {
+    if (!activeChat) return;
+
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      conversationId: activeChat.conversation.id,
+      senderId: 'provider1',
+      senderName: 'You',
+      senderRole: 'provider',
+      content,
+      timestamp: new Date(),
+      messageType: messageType || 'text',
+      read: false
+    };
+
+    setActiveChat(prev => prev ? {
+      ...prev,
+      messages: [...prev.messages, newMessage]
+    } : null);
+  };
+
+  const handleStartCall = (callType: 'audio' | 'video', anonymous: boolean) => {
+    console.log('Starting call:', { callType, anonymous });
+    alert(`Starting ${anonymous ? 'anonymous ' : ''}${callType} call with ${activeChat?.sos.userName}`);
   };
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">
+      {/* Chat Interface Overlay */}
+      {activeChat && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl h-3/4">
+            <ChatInterface
+              conversation={activeChat.conversation}
+              messages={activeChat.messages}
+              onSendMessage={handleSendMessage}
+              onStartCall={handleStartCall}
+              onClose={() => setActiveChat(null)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -122,10 +212,22 @@ export const ProviderDashboard: React.FC = () => {
               Urgent SOS Posts
             </h2>
           </div>
-          <SOSList
-            sosPosts={mockSOSPosts}
-            onClaim={handleClaimSOS}
-            showActions={true}
+          <SOSList 
+            sosRequests={mockSOSPosts.map(post => ({
+              id: post.id,
+              userId: post.seeker.id,
+              userName: post.seeker.name,
+              title: post.title,
+              description: post.description,
+              urgency: 'high' as const,
+              category: 'Emergency',
+              location: post.seeker.location,
+              expiryTimestamp: new Date(post.expiresAt),
+              createdAt: new Date(post.createdAt),
+              status: 'active',
+              tags: []
+            }))}
+            onRespondToSOS={handleRespondToSOS}
           />
         </div>
       </div>

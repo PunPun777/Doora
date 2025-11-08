@@ -4,6 +4,8 @@ export interface User {
   name: string;
   avatar?: string;
   phone?: string;
+  role?: 'provider' | 'seeker'; 
+  userType?: 'provider' | 'seeker';
   location: {
     latitude: number;
     longitude: number;
@@ -84,6 +86,53 @@ export interface Message {
   content: string;
   timestamp: string;
   type: 'text' | 'image' | 'location';
+}
+
+export interface ChatMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  senderRole: 'provider' | 'seeker';
+  content: string;
+  timestamp: Date;
+  messageType: 'text' | 'image' | 'location' | 'sos_alert' | 'call_request';
+  read: boolean;
+  metadata?: {
+    callType?: 'audio' | 'video';
+    callDuration?: number;
+    anonymous?: boolean;
+  };
+}
+
+export interface Conversation {
+  id: string;
+  participantIds: string[];
+  participants: {
+    id: string;
+    name: string;
+    role: 'provider' | 'seeker';
+    avatar?: string;
+    phoneNumber?: string; // For anonymous calls
+  }[];
+  lastMessage?: ChatMessage;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
+  context?: {
+    serviceId?: string;
+    sosRequestId?: string;
+    serviceType?: string;
+  };
+  anonymousCallEnabled: boolean;
+}
+
+export interface CallState {
+  isInCall: boolean;
+  callType: 'audio' | 'video' | null;
+  isAnonymous: boolean;
+  participants: string[];
+  startTime: Date | null;
 }
 
 export interface ProviderMetrics {
